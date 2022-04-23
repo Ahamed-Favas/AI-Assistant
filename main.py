@@ -82,7 +82,8 @@ def get_response(intents_list, intents_json):
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-engine.setProperty('rete', 160)
+cust_rate=160
+engine.setProperty('rate', cust_rate)
 # print(voices[1].id)
 engine.setProperty('voice', voices[0].id)
 
