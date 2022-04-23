@@ -27,7 +27,7 @@ from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 print("finished imports")
 
-mode = 1
+mode = 0
 # bolt setup
 api_key = '3693dec9-5fe0-4743-bb6f-275cbb821b0e'
 device_id = 'BOLT13166757'
@@ -247,6 +247,7 @@ if __name__ == "__main__":
     # Do a bit of cleanup
     cam.release()
     cv2.destroyAllWindows()
+    access=1
     if access:
         intents = json.loads(open('deeplearning/intents.json').read())
         #     reloading model, classes, words.pkl files
