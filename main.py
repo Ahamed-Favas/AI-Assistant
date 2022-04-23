@@ -1,6 +1,7 @@
 # imports
 from syscontrols.brightness import brt
 from syscontrols.vloume import vlm
+from Mail.main import mail
 import psutil
 from pkg_resources import declare_namespace
 import cv2
@@ -371,6 +372,8 @@ if __name__ == "__main__":
     
                             elif 'to do' in query:
                                 os.system('python todo.py')
+                            elif 'mail' in query:
+                                speak(mail())
     
     
                 except Exception as e:
