@@ -2,6 +2,7 @@
 from syscontrols.brightness import brt
 from syscontrols.vloume import vlm
 from Mail.main import mail
+from Weather.main import weather
 import psutil
 from pkg_resources import declare_namespace
 import cv2
@@ -374,6 +375,8 @@ if __name__ == "__main__":
                                 os.system('python todo.py')
                             elif 'mail' in query:
                                 speak(mail())
+                            elif 'weather' in query:
+                                speak(weather())
     
     
                 except Exception as e:
