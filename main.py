@@ -1,10 +1,12 @@
 # imports
+from asyncore import loop
 from syscontrols.brightness import brt
 from syscontrols.vloume import vlm
 from Mail.main import mail
 from Weather.main import weather
-from todo import todo
+from password.reset import userkey
 import psutil
+import todo
 from pkg_resources import declare_namespace
 import cv2
 from boltiot import Bolt
@@ -12,6 +14,7 @@ import json
 import pyttsx3  # pip install pyttsx3
 import speech_recognition as sr  # pip install speechRecognition
 import datetime
+from todo import todo
 import wikipedia  # pip install wikipedia
 import webbrowser
 import os
@@ -82,8 +85,7 @@ def get_response(intents_list, intents_json):
 
 engine = pyttsx3.init('sapi5')
 voices = engine.getProperty('voices')
-cust_rate=160
-engine.setProperty('rate', cust_rate)
+engine.setProperty('rete', 160)
 # print(voices[1].id)
 engine.setProperty('voice', voices[0].id)
 
@@ -183,10 +185,10 @@ if __name__ == "__main__":
     font = cv2.FONT_HERSHEY_SIMPLEX #denotes the font type
     access = 0
 
-    id = 4 #number of persons you want to Recognize
+    id = 3 #number of persons you want to Recognize
 
 
-    names = ['','Akhil', 'Arjun', 'Favas', 'Jerin']  #names, leave first empty bcz counter starts from 0
+    names = ['','Akhil', 'Arjun', "Favas"]  #names, leave first empty bcz counter starts from 0
 
     print("reachd cam")
     cam = cv2.VideoCapture(0, cv2.CAP_DSHOW) #cv2.CAP_DSHOW to remove warning
@@ -198,9 +200,9 @@ if __name__ == "__main__":
     minW = 0.1*cam.get(3)
     minH = 0.1*cam.get(4)
 
-    # flag = True
+    T=15
 
-    while True and access == 0:
+    while T!=0 and access == 0:
         print("reached cam.read()")
         ret, img =cam.read() #read the frames using the above created object
 
@@ -245,11 +247,30 @@ if __name__ == "__main__":
         k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
         if k == 27:
             break
+        T=T-1
 
     # Do a bit of cleanup
     cam.release()
     cv2.destroyAllWindows()
-    access=1
+
+
+    if access == 0:
+        key = input("can't recognize your face, please enter the password :")
+        if (key == userkey()):
+            access=1
+            print('granted')
+        else:
+            for i in range(2):
+                key1 = input("Error! re-enter your password :")
+                if (key1 == userkey()):
+                    print("granted")
+                    access=1
+                    break
+    if (access==0):
+        print("authentication failed")        
+
+
+
     if access:
         intents = json.loads(open('deeplearning/intents.json').read())
         #     reloading model, classes, words.pkl files

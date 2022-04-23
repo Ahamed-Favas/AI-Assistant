@@ -63,3 +63,5 @@ def todo():
     button_save_tasks.pack()
 
     root.mainloop()
+
+    return todo
