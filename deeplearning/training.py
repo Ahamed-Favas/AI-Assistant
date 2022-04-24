@@ -64,7 +64,7 @@ def mainfunc():
     model = Sequential()
     model.add(Dense(128, input_shape=(len(train_x[0]), ), activation='relu'))
     model.add(Dropout(0.5))
-    model.add(Dense(34, activation='relu'))
+    model.add(Dense(64, activation='relu'))
     model.add(Dropout(0.5))
     model.add(Dense(len(train_y[0]), activation='softmax'))
 

@@ -493,6 +493,24 @@
             "responses":[
                 "Hold on .. Opening", "Opening" ,"Sure"
             ]
+        },
+        {
+            "tag": "init",
+            "patterns":[
+                "initialise", "initialize"
+            ],
+            "responses": [
+                "Sure", "okay"
+            ]
+        },
+        {
+            "tag": "converter",
+            "patterns":[
+                "convert a file", "file converter", "can you convert a file"
+            ],
+            "responses":[
+                "sure", "opening converter", "flask server runnning"
+            ]
         }
 
     ]
