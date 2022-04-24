@@ -10,6 +10,7 @@ from syscontrols.brightness import brt
 from syscontrols.vloume import vlm
 from Mail.main import mail
 from Weather.main import weather
+from Flask_Document_Converter.main import main
 from password.reset import userkey
 import psutil
 import todo
@@ -473,6 +474,8 @@ if __name__ == "__main__":
                                 initialisation()
                             else:
                                 print("denied")
+                        elif userintent == 'converter':
+                            main()
                         elif 'wikipedia' in query:
                             speak('Searching Wikipedia...')
                             query = query.replace("wikipedia", "")
@@ -480,7 +483,7 @@ if __name__ == "__main__":
                             speak("According to Wikipedia")
                             print(results)
                             speak(results)
-
+                                  
                         elif 'open youtube' in query:
                             webbrowser.open("youtube.com")
 

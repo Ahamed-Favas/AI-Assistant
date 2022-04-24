@@ -37,6 +37,6 @@ def upload_hanler():
       
       return render_template('output.html')
 		
-#def main():
-app.run(debug = True)
+def main():
+   app.run(debug = True)
 
