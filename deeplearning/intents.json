@@ -465,6 +465,35 @@
 			"responses":[
 				"Sure.. Checking Your mails"
 			]
-		}
+		},
+        {
+            "tag": "switch window",
+            "patterns":[
+                "switch window" , "window switch" 
+            ],
+            "responses":[
+                "Hold On..Switching Window"
+            ]
+        },
+        {
+            "tag": "show workspace",
+            "patterns":[
+                "show workspace" , "workspace show" ,"show opened windows","show all windows"
+            ],
+            "responses":[
+                "Hold on.. Showing Workspaces" , "Showing workspaces","Loading Workspaces"
+            ]
+            
+        },
+        {
+            "tag": "launch",
+            "patterns":[
+                "open" , "open a app" ,"launch" ,"launch"
+            ],
+            "responses":[
+                "Hold on .. Opening", "Opening" ,"Sure"
+            ]
+        }
+
     ]
 }
