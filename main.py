@@ -187,10 +187,10 @@ if __name__ == "__main__":
     font = cv2.FONT_HERSHEY_SIMPLEX #denotes the font type
     access = 0
 
-    id = 3 #number of persons you want to Recognize
+    id = 4 #number of persons you want to Recognize
 
 
-    names = ['','Akhil', 'Arjun', "Favas"]  #names, leave first empty bcz counter starts from 0
+    names = ['','Akhil', 'Arjun', 'Favas', 'Jerin']  #names, leave first empty bcz counter starts from 0
 
     print("reachd cam")
     cam = cv2.VideoCapture(0, cv2.CAP_DSHOW) #cv2.CAP_DSHOW to remove warning
