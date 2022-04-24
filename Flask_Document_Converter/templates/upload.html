@@ -1,11 +1,26 @@
 <html>
-   <h1>Document Converter</h1>
+   <!DOCTYPE html>
+   <html lang="en">
+   <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Document Converter</title>
+   </head>
    <body>
-      <form action = "http://localhost:5000/uploader" method = "POST" 
-         enctype = "multipart/form-data">
-         <input type = "file" name="file"/>
-         Covert To:<input type="text" name="name" id="pdf">
-         <input type = "submit"/>
-      </form>   
+      <link rel="stylesheet" href="../static/upload.css">
+      <h1 class="header">Document Converter</h1>
+      <form action = "http://localhost:5000/uploader" method = "POST" enctype = "multipart/form-data">
+         <div class="inputer">
+            <input type = "file" name="file" class="browse-btn" size=60/>
+            Save Location:<input type="text" name="loc" class="input-btn">
+            <label class="convert-to">
+               Covert To:
+            </label>
+            <input type="text" name="name" class="input-btn">
+            <input type = "submit" class="submit-btn"/>
+            
+         </div>
+      </form>  
    </body>
 </html>

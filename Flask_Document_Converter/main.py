@@ -1,11 +1,10 @@
-from xml.dom.minidom import Document
 from flask import Flask, render_template, request
 import aspose.words as aw
 
 import os
 
 app = Flask(__name__)
-
+app.config['UPLOAD_FOLDER'] = "C:/Users/Downloads"
 @app.route('/')
 def upload_file():
    return render_template('upload.html')
@@ -15,10 +14,11 @@ def upload_hanler():
    if request.method == 'POST':
       f = request.files['file']
       f.save(f.filename)
+      savepath = request.form['loc']
       ftype = request.form['name']
       if ftype == 'pdf':
          doc=aw.Document(f.filename)
-         doc.save("Output.pdf")
+         doc.save(savepath+"output.pdf")
       elif ftype== 'docx':
          doc=aw.Document(f.filename)
          doc.save("Output.docx")
@@ -35,7 +35,8 @@ def upload_hanler():
          doc=aw.Document(f.filename)
          doc.save("Output.html")
       
-      return '<h1>file uploaded successfully<h1>'
+      return render_template('output.html')
 		
-def main():
-   app.run(debug = True)
+#def main():
+app.run(debug = True)
+
