@@ -1,4 +1,5 @@
 # imports
+import time
 from asyncore import loop
 from syscontrols.brightness import brt
 from syscontrols.vloume import vlm
@@ -29,9 +30,10 @@ from ctypes import cast, POINTER
 import wmi
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
+import pyautogui as pg
 print("finished imports")
 
-mode = 0
+mode = 1
 # bolt setup
 api_key = '3693dec9-5fe0-4743-bb6f-275cbb821b0e'
 device_id = 'BOLT13166757'
@@ -363,6 +365,18 @@ if __name__ == "__main__":
                                 brt()
                             elif userintent == 'volume':
                                 vlm()
+                            elif userintent == "switch window":
+                                pg.hotkey('alt','tab')
+                            elif userintent == "show workspace":
+                                pg.hotkey('win','tab')
+                            elif userintent == 'launch':
+                                speak("what apps do you want to launch")
+                                apps=takeCommand(1)
+                                pg.press('win')
+                                time.sleep(2)
+                                pg.write(apps)
+                                time.sleep(1)
+                                pg.press('enter')
     
                             elif 'wikipedia' in query:
                                 speak('Searching Wikipedia...')
