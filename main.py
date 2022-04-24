@@ -1,4 +1,9 @@
 # imports
+import imaplib
+import email
+from cryptography.fernet import Fernet
+import sys
+import subprocess
 import time
 from asyncore import loop
 from syscontrols.brightness import brt
@@ -176,6 +181,88 @@ def getsmart():
     from training import mainfunc
     mainfunc()
 
+# For first time running gets username password of mail and sets up user face recognition
+def initialisation():
+    import imaplib
+    import email
+    from cryptography.fernet import Fernet
+    import sys
+    print("Setting Up face recognition")
+    from facerecog import sample_generator, module_trainer
+    print('after')
+    sample_generator.main()
+    print("training")
+    module_trainer.module_gen()
+    print("setting up mail credentials")
+    mail_username = input("Enter mail username")
+    mail_password = input("Enter mail passsword")
+    key = Fernet.generate_key()
+    password = bytes(mail_password, encoding='utf-8')
+    r = Fernet(key)
+    token = r.encrypt(password)
+    file1 = open(r'Mail/username.txt', 'w')
+    file1.write(mail_username)
+    file2 = open(r'Mail/password.txt', 'wb')
+    file2.write(token)
+    file3 = open(r'Mail/keys.txt', 'wb')
+    file3.write(key)
+    file3.close()
+    file2.close()
+    file1.close()
+    print(token)
+    test1=r.decrypt(token)
+    print(test1)
+    
+    imap_server = "imap.gmail.com"
+    file1 = open(r'Mail/username.txt', 'r')
+    file2 = open(r'Mail/password.txt', 'r')
+    file3 = open(r'Mail/keys.txt', 'r')
+    content_list1 = file1.readlines()
+    content_list2 = file2.readlines()
+    content_list3 = file3.readlines()
+    username = content_list1[0]
+    password = content_list2[0]
+    keyfromfile = content_list3[0]
+    print("Username", username)
+    print("Password", password)
+    keyfromfile = bytes(keyfromfile, encoding='utf-8')
+    print(keyfromfile)
+    print(type(keyfromfile))
+    r = Fernet(keyfromfile)
+    print('r---', r)
+    print(type(r))
+    password = bytes(password, encoding='utf-8')
+    print(password)
+    # key = Fernet.generate_key()
+    # password = bytes(password, encoding='utf-8')
+    # r = Fernet(key)
+    # token = r.encrypt(password)
+    # print(token)
+    test1=r.decrypt(password)
+    print(test1)
+    mail  = imaplib.IMAP4_SSL('imap.gmail.com')
+    (retcode, capabilities) = mail.login(username,test1.decode('utf-8'))
+    mail.list()
+    mail.select('inbox')
+
+    n=0
+    (retcode, messages) = mail.search(None, '(UNSEEN)')
+    if retcode == 'OK':
+
+        for num in messages[0].split() :
+            print('Processing ')
+            n=n+1
+            typ, data = mail.fetch(num,'(RFC822)')
+            for response_part in data:
+                if isinstance(response_part, tuple):
+                    original = email.message_from_bytes(data[0][1])
+
+                    print (original['From'])
+                    print (original['Subject'])
+                    typ, data = mail.store(num,'+FLAGS','\\Seen')
+
+    print(n)
+
 if __name__ == "__main__":
     print("inside main main")
     # face recognition
@@ -187,10 +274,10 @@ if __name__ == "__main__":
     font = cv2.FONT_HERSHEY_SIMPLEX #denotes the font type
     access = 0
 
-    id = 4 #number of persons you want to Recognize
+    id = 3 #number of persons you want to Recognize
 
 
-    names = ['','Akhil', 'Arjun', 'Favas', 'Jerin']  #names, leave first empty bcz counter starts from 0
+    names = ['','Akhil', 'Arjun', "Favas"]  #names, leave first empty bcz counter starts from 0
 
     print("reachd cam")
     cam = cv2.VideoCapture(0, cv2.CAP_DSHOW) #cv2.CAP_DSHOW to remove warning
@@ -272,7 +359,6 @@ if __name__ == "__main__":
         print("authentication failed")        
 
 
-
     if access:
         intents = json.loads(open('deeplearning/intents.json').read())
         #     reloading model, classes, words.pkl files
@@ -312,111 +398,126 @@ if __name__ == "__main__":
                 wait.until(visible((By.ID, "video-title")))
                 driver.find_element_by_id("video-title").click()
             else:
+                print("entered else")
                 ints = predict_class(query)
                 print(ints)
                 # print("float[ints][0]", float(ints[0]['probability']))
                 try:
-                    if query != "none":
-                        if float(ints[0]['probability']) < 0.60000:
+                    print("Before if")
+                    if float(ints[0]['probability']) < 0.60000 and query!= "none":
+                        print("after if")
+                        webbrowser.open("https://www.google.com/search?q="+query)
+                        # speak("Not sure what you meant there")
+                        # userwish = input("Do you want me to learn")
+                        # if userwish == 'yes':
+                        #     getsmart()
+                        #     speak("trained new model")
+                        #     intents = json.loads(open('intents.json').read())
+                        #     #     reloading model, classes, words.pkl files
+                        #     words = pickle.load(open('words.pkl', 'rb'))
+                        #     classes = pickle.load(open('classes.pkl', 'rb'))
+                        #     model = load_model('chatbot_model.h5')
+
+                    else:
+                        print("entered 2nd else")
+                        res = get_response(ints, intents)
+                        print("res",res)
+                        speak(res)
+
+                        userintent = ints[0]['intent']
+                        if userintent == 'lon':
+                            response = mybolt.digitalWrite('0', 'HIGH')
+                            print(response)
+                        elif userintent == 'loff':
+                            response = mybolt.digitalWrite('0', 'LOW')
+                        elif userintent == 'Youtube':
+                            speak("Add a search term")
+                            query = takeCommand(mode).lower()
+                            webbrowser.open("https://www.youtube.com/results?search_query="+query)
+                        elif userintent == 'google':
+                            speak("Add a search term")
+                            query = takeCommand(mode).lower()
                             webbrowser.open("https://www.google.com/search?q="+query)
-                            # speak("Not sure what you meant there")
-                            # userwish = input("Do you want me to learn")
-                            # if userwish == 'yes':
-                            #     getsmart()
-                            #     speak("trained new model")
-                            #     intents = json.loads(open('intents.json').read())
-                            #     #     reloading model, classes, words.pkl files
-                            #     words = pickle.load(open('words.pkl', 'rb'))
-                            #     classes = pickle.load(open('classes.pkl', 'rb'))
-                            #     model = load_model('chatbot_model.h5')
-    
-                        else:
-                            res = get_response(ints, intents)
-                            print(res)
-                            speak(res)
-    
-                            userintent = ints[0]['intent']
-                            if userintent == 'lon':
-                                response = mybolt.digitalWrite('0', 'HIGH')
-                                print(response)
-                            elif userintent == 'loff':
-                                response = mybolt.digitalWrite('0', 'LOW')
-                            elif userintent == 'Youtube':
-                                speak("Add a search term")
-                                query = takeCommand(mode).lower()
-                                webbrowser.open("https://www.youtube.com/results?search_query="+query)
-                            elif userintent == 'google':
-                                speak("Add a search term")
-                                query = takeCommand(mode).lower()
-                                webbrowser.open("https://www.google.com/search?q="+query)
-                            # Logic for executing tasks based on query
-                            elif userintent == 'stats':
-                                devices = AudioUtilities.GetSpeakers()
-                                interface = devices.Activate(
-                                    IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-                                battery = psutil.sensors_battery()
-                                speak(f"Battery at {battery.percent}")
-                                speak(f"You are good for{secs2hours(battery.secsleft)}")
-                                volume = cast(interface, POINTER(IAudioEndpointVolume))
-                                speak(f"Volume levels at{round(volume.GetMasterVolumeLevelScalar()*100)}")
-                                speak(f"Screen Brightness at{wmi.WMI(namespace='wmi').WmiMonitorBrightness()[0].CurrentBrightness}")
-    
-                            elif userintent == 'brightness':
-                                brt()
-                            elif userintent == 'volume':
-                                vlm()
-                            elif userintent == "switch window":
-                                pg.hotkey('alt','tab')
-                            elif userintent == "show workspace":
-                                pg.hotkey('win','tab')
-                            elif userintent == 'launch':
-                                speak("what apps do you want to launch")
-                                apps=takeCommand(1)
-                                pg.press('win')
-                                time.sleep(2)
-                                pg.write(apps)
-                                time.sleep(1)
-                                pg.press('enter')
-    
-                            elif 'wikipedia' in query:
-                                speak('Searching Wikipedia...')
-                                query = query.replace("wikipedia", "")
-                                results = wikipedia.summary(query, sentences=2)
-                                speak("According to Wikipedia")
-                                print(results)
-                                speak(results)
-    
-                            elif 'open youtube' in query:
-                                webbrowser.open("youtube.com")
-    
-                            elif 'open google' in query:
-                                webbrowser.open("google.com")
-    
-                            elif 'open stackoverflow' in query:
-                                webbrowser.open("stackoverflow.com")
-    
-                            elif 'play music' in query:
-                                music_dir = 'D:\\Non Critical\\songs\\Favorite Songs2'
-                                songs = os.listdir(music_dir)
-                                print(songs)
-                                os.startfile(os.path.join(music_dir, songs[0]))
-    
-                            elif 'the time' in query:
-                                strTime = datetime.datetime.now().strftime("%H:%M:%S")
-                                speak(f"The time is {strTime}")
-    
-                            elif 'open code' in query:
-                                codePath = ""
-                                os.startfile(codePath)
-    
-                            elif 'to do' in query:
-                                todo()
-                            elif 'mail' in query:
-                                speak(mail())
-                            elif 'weather' in query:
-                                speak(weather())
+                        # Logic for executing tasks based on query
+                        elif userintent == 'stats':
+                            devices = AudioUtilities.GetSpeakers()
+                            interface = devices.Activate(
+                                IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+                            battery = psutil.sensors_battery()
+                            speak(f"Battery at {battery.percent}")
+                            speak(f"You are good for{secs2hours(battery.secsleft)}")
+                            volume = cast(interface, POINTER(IAudioEndpointVolume))
+                            speak(f"Volume levels at{round(volume.GetMasterVolumeLevelScalar()*100)}")
+                            speak(f"Screen Brightness at{wmi.WMI(namespace='wmi').WmiMonitorBrightness()[0].CurrentBrightness}")
+
+                        elif userintent == 'brightness':
+                            brt()
+                        elif userintent == 'volume':
+                            vlm()
+                        elif userintent == "switch window":
+                            pg.hotkey('alt','tab')
+                        elif userintent == "show workspace":
+                            pg.hotkey('win','tab')
+                        elif userintent == 'launch':
+                            speak("what apps do you want to launch")
+                            apps=takeCommand(1)
+                            pg.press('win')
+                            time.sleep(2)
+                            pg.write(apps)
+                            time.sleep(1)
+                            pg.press('enter')
+
+                        elif userintent == 'init':
+                            key = input("Enter Master Password")
+                            if key == userkey():
+                                initialisation()
+                            else:
+                                print("denied")
+                        elif 'wikipedia' in query:
+                            speak('Searching Wikipedia...')
+                            query = query.replace("wikipedia", "")
+                            results = wikipedia.summary(query, sentences=2)
+                            speak("According to Wikipedia")
+                            print(results)
+                            speak(results)
+
+                        elif 'open youtube' in query:
+                            webbrowser.open("youtube.com")
+
+                        elif 'open google' in query:
+                            webbrowser.open("google.com")
+
+                        elif 'open stackoverflow' in query:
+                            webbrowser.open("stackoverflow.com")
+
+                        elif 'play music' in query:
+                            music_dir = 'D:\\Non Critical\\songs\\Favorite Songs2'
+                            songs = os.listdir(music_dir)
+                            print(songs)
+                            os.startfile(os.path.join(music_dir, songs[0]))
+
+                        elif 'the time' in query:
+                            strTime = datetime.datetime.now().strftime("%H:%M:%S")
+                            speak(f"The time is {strTime}")
+
+                        elif 'open code' in query:
+                            codePath = ""
+                            os.startfile(codePath)
+
+                        elif 'to do' in query:
+                            todo()
+                        elif 'mail' in query:
+                            speak(mail())
+                        elif 'weather' in query:
+                            speak(weather())
+                        
     
     
                 except Exception as e:
-                    print(e)
-    
+                    print("Exception bruv",e)
+                    if "list network" in query:
+                        devices = subprocess.check_output(['netsh','wlan','show','network'])
+                        devices = devices.decode('ascii')
+                        devices= devices.replace("\r","")
+                        print(devices)
+
