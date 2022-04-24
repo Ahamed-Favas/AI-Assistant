@@ -147,17 +147,17 @@
                 "what are you"
             ],
             "responses": [
-                "I am Ted, a Deep-Learning chatbot"
+                "I am a deep learning voice assistant",
+                "Im here to help"
             ]
         },
         {
             "tag": "datetime",
             "patterns": [
-                "What is the time",
-                "what is the date",
-                "date",
                 "time",
-                "tell me the date","day","what day is is today"
+                "what is he time",
+                "date",
+                "day","what day is is today"
             ],
             "responses": [
                 "Date and Time"
@@ -166,13 +166,12 @@
         {
             "tag": "whatsup",
             "patterns": [
-                "Whats up",
-                "Wazzup",
-                "How are you",
-                "sup","How you doing"
+                "What's up",
+                "What's up Messages",
+                "Whatsapp"
             ],
             "responses": [
-                "All good..What about you?"
+                "opening what's up"
             ]
         },
         {
@@ -196,7 +195,7 @@
                 "who programmed you"
             ],
             "responses": [
-                "I was made by Karan Malik."
+                "I was made by P30Chunkz"
             ]
         },
         {
@@ -219,7 +218,8 @@
                 "what are you upto"
             ],
             "responses": [
-                "Talking to you, of course!"
+                "Here to help",
+                "How can i help"
             ]
         },
         {
@@ -232,7 +232,8 @@
                 "yeah"
             ],
             "responses": [
-                "Yeah!"
+                "Yeah!",
+                "hehe"
             ]
         },
 
