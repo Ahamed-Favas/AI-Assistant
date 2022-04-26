@@ -10,9 +10,7 @@ from syscontrols.brightness import brt
 from syscontrols.vloume import vlm
 from Mail.main import mail
 from Weather.main import weather
-print("Before converter")
 from Flask_Document_Converter.converter import app
-print("After converter")
 from password.reset import userkey
 import psutil
 import todo
@@ -103,6 +101,9 @@ engine.setProperty('voice', voices[0].id)
 def speak(audio):
     engine.say(audio)
     engine.runAndWait()
+
+def Task_Gui():
+    os.system('python main.py')
 
 
 def wishMe():
@@ -269,6 +270,7 @@ def initialisation():
 if __name__ == "__main__":
     print("inside main main")
     # face recognition
+    speak("Please show your Face")
     recognizer = cv2.face.LBPHFaceRecognizer_create() # Local Binary Patterns Histograms
     recognizer.read('facerecog/trainer/trainer.yml')   #load trained model
     cascadePath = "facerecog/haarcascade_frontalface_default.xml"
@@ -333,7 +335,7 @@ if __name__ == "__main__":
 
         cv2.imshow('camera',img) 
         if access:
-            print('granted')
+            speak('autentication success')
         else:
             print('denied')
         k = cv2.waitKey(10) & 0xff # Press 'ESC' for exiting video
@@ -347,18 +349,23 @@ if __name__ == "__main__":
 
 
     if access == 0:
+        speak("can't recognize your face, please enter the password")
         key = input("can't recognize your face, please enter the password :")
         if (key == userkey()):
             access=1
-            print('granted')
+            print("autentication success")
+            speak("autentication success")
         else:
             for i in range(2):
+                speak("Error! re-enter your password")
                 key1 = input("Error! re-enter your password :")
                 if (key1 == userkey()):
-                    print("granted")
+                    speak("autentication success")
+                    print("autentication success")
                     access=1
                     break
     if (access==0):
+        speak("autentication failed")
         print("authentication failed")        
 
 
