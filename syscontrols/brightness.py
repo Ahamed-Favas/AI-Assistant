@@ -10,7 +10,7 @@ def brt():
     mpHands = mp.solutions.hands
     hands = mpHands.Hands()
     mpDraw = mp.solutions.drawing_utils
-    timeout = 10
+    timeout = 5
     timeout_start = time.time()
     while time.time() < timeout_start+timeout:
         success, img = cap.read()

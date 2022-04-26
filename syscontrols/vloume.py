@@ -20,7 +20,7 @@ def vlm():
 
     volMin, volMax = volume.GetVolumeRange()[:2]
 
-    timeout = 10
+    timeout = 5
     timeout_start = time.time()
     while time.time() < timeout_start+timeout:
         success, img = cap.read()

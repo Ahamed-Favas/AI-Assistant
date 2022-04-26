@@ -10,7 +10,9 @@ from syscontrols.brightness import brt
 from syscontrols.vloume import vlm
 from Mail.main import mail
 from Weather.main import weather
-from Flask_Document_Converter.main import main
+print("Before converter")
+from Flask_Document_Converter.converter import app
+print("After converter")
 from password.reset import userkey
 import psutil
 import todo
@@ -39,7 +41,7 @@ from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 import pyautogui as pg
 print("finished imports")
 
-mode = 1
+mode = 0
 # bolt setup
 api_key = '3693dec9-5fe0-4743-bb6f-275cbb821b0e'
 device_id = 'BOLT13166757'
@@ -188,13 +190,13 @@ def initialisation():
     import email
     from cryptography.fernet import Fernet
     import sys
-    print("Setting Up face recognition")
-    from facerecog import sample_generator, module_trainer
-    print('after')
-    sample_generator.main()
-    print("training")
-    module_trainer.module_gen()
-    print("setting up mail credentials")
+    # print("Setting Up face recognition")
+    # from facerecog import sample_generator, module_trainer
+    # print('after')
+    # sample_generator.main()
+    # print("training")
+    # module_trainer.module_gen()
+    # print("setting up mail credentials")
     mail_username = input("Enter mail username")
     mail_password = input("Enter mail passsword")
     key = Fernet.generate_key()
@@ -278,7 +280,7 @@ if __name__ == "__main__":
     id = 3 #number of persons you want to Recognize
 
 
-    names = ['','Akhil', 'Arjun', "Favas"]  #names, leave first empty bcz counter starts from 0
+    names = ['','Akhil', 'Arjun']  #names, leave first empty bcz counter starts from 0
 
     print("reachd cam")
     cam = cv2.VideoCapture(0, cv2.CAP_DSHOW) #cv2.CAP_DSHOW to remove warning
@@ -290,7 +292,7 @@ if __name__ == "__main__":
     minW = 0.1*cam.get(3)
     minH = 0.1*cam.get(4)
 
-    T=15
+    T=30
 
     while T!=0 and access == 0:
         print("reached cam.read()")
@@ -401,7 +403,7 @@ if __name__ == "__main__":
             else:
                 print("entered else")
                 ints = predict_class(query)
-                print(ints)
+                print("ints", ints)
                 # print("float[ints][0]", float(ints[0]['probability']))
                 try:
                     print("Before if")
@@ -461,7 +463,7 @@ if __name__ == "__main__":
                             pg.hotkey('win','tab')
                         elif userintent == 'launch':
                             speak("what apps do you want to launch")
-                            apps=takeCommand(1)
+                            apps=takeCommand(mode) #change it later
                             pg.press('win')
                             time.sleep(2)
                             pg.write(apps)
@@ -475,7 +477,11 @@ if __name__ == "__main__":
                             else:
                                 print("denied")
                         elif userintent == 'converter':
-                            main()
+                            print("converter else")
+                            webbrowser.open("http://127.0.0.1:5000")
+                            app.run()
+                            
+                            
                         elif 'wikipedia' in query:
                             speak('Searching Wikipedia...')
                             query = query.replace("wikipedia", "")
@@ -517,7 +523,7 @@ if __name__ == "__main__":
     
     
                 except Exception as e:
-                    print("Exception bruv",e)
+                    print("eda exception",e)
                     if "list network" in query:
                         devices = subprocess.check_output(['netsh','wlan','show','network'])
                         devices = devices.decode('ascii')

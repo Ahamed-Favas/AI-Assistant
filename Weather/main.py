@@ -1,5 +1,4 @@
 
-
 def weather():
     import os
     import requests
