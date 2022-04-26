@@ -39,7 +39,7 @@ from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 import pyautogui as pg
 print("finished imports")
 
-mode = 1
+mode = 0
 # bolt setup
 api_key = '3693dec9-5fe0-4743-bb6f-275cbb821b0e'
 device_id = 'BOLT13166757'
