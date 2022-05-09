@@ -467,6 +467,15 @@
 			]
 		},
         {
+			"tag": "news",
+			"patterns":[
+				"news"
+			],
+			"responses":[
+				"Sure"
+			]
+		},
+        {
             "tag": "switch window",
             "patterns":[
                 "switch window" , "window switch" 

@@ -1,5 +1,5 @@
 from numpy import uint
-from ui import Ui_MainWindow
+from voice import Ui_MainWindow
 from PyQt5 import QtCore , QtGui, QtWidgets
 from PyQt5.QtCore import *
 from PyQt5.QtGui import QMovie
@@ -8,6 +8,7 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtCore import Qt, QTimer, QTime,QDate
 from PyQt5.uic import loadUiType
 import sys
+import os 
 
 import main
 
@@ -17,11 +18,9 @@ class MainThread(QThread):
     def __init__(self):
 
         super(MainThread,self).__init__()
-    
+ 
     def run(self):
         main.Task_Gui()
-
-
 
 startExe = MainThread()
 
@@ -34,14 +33,17 @@ class Gui_Start(QMainWindow):
         self.gui.setupUi(self)
 
         self.gui.pushButton.clicked.connect(self.startTask)
+        self.gui.pushButton_2.clicked.connect(self.close)
 
     def startTask(self):
+        
         self.gui.label=QtGui.QMovie("Assets/bubble.gif")
         self.gui.bg_2.setMovie(self.gui.label)
         self.gui.label.start()
 
-        
         startExe.start()
+
+
 
 GuiApp = QApplication(sys.argv)
 ui = Gui_Start()

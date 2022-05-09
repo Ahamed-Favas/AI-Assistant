@@ -1,6 +1,7 @@
-# imports
 import imaplib
 import email
+from news1 import nws
+import pprint
 from cryptography.fernet import Fernet
 import sys
 import subprocess
@@ -104,7 +105,6 @@ def speak(audio):
 
 def Task_Gui():
     os.system('python main.py')
-
 
 def wishMe():
     hour = int(datetime.datetime.now().hour)
@@ -522,6 +522,17 @@ if __name__ == "__main__":
 
                         elif 'to do' in query:
                             todo()
+                        elif 'news' in query:
+                            obj = nws()
+                            news_res = obj.news()
+                            speak('Todays Headlines are..')
+                            for index, articles in enumerate(news_res):
+                                pprint.pprint(articles['title'])
+                                speak(articles['title'])
+                                if index == len(news_res)-2:
+                                    break
+                            speak('These were the top headlines, Have a nice day')
+
                         elif 'mail' in query:
                             speak(mail())
                         elif 'weather' in query:
