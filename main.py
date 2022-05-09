@@ -23,6 +23,7 @@ import pyttsx3  # pip install pyttsx3
 import speech_recognition as sr  # pip install speechRecognition
 import datetime
 from todo import todo
+from ecommerce_sites import ecomm
 import wikipedia  # pip install wikipedia
 import webbrowser
 import os
@@ -268,7 +269,7 @@ def initialisation():
     print(n)
 
 if __name__ == "__main__":
-    print("inside main main")
+
     # face recognition
     speak("Please show your Face")
     recognizer = cv2.face.LBPHFaceRecognizer_create() # Local Binary Patterns Histograms
@@ -279,12 +280,12 @@ if __name__ == "__main__":
     font = cv2.FONT_HERSHEY_SIMPLEX #denotes the font type
     access = 0
 
-    id = 3 #number of persons you want to Recognize
+    id = 4 #number of persons you want to Recognize
 
 
-    names = ['','Akhil', 'Arjun']  #names, leave first empty bcz counter starts from 0
+    names = ['','Akhil', 'Arjun','Favas','Jerin']  #names, leave first empty bcz counter starts from 0
 
-    print("reachd cam")
+    print("reached cam")
     cam = cv2.VideoCapture(0, cv2.CAP_DSHOW) #cv2.CAP_DSHOW to remove warning
     print("activated Cam")
     cam.set(3, 640) # set video FrameWidht
@@ -366,7 +367,9 @@ if __name__ == "__main__":
                     break
     if (access==0):
         speak("autentication failed")
-        print("authentication failed")        
+        print("authentication failed")
+
+            
 
 
     if access:
@@ -383,168 +386,171 @@ if __name__ == "__main__":
 
         while True:
             query = takeCommand(mode).lower()
+
+            if(mode==0 or 'siri' in query):
             
-            # code to play a song from youtube
-            # if first word of user sentence is play then execute this code
-            print(query.split())
-            if query.split()[0] == "play":
-                from selenium import webdriver
-                from selenium.webdriver.common.by import By
-                from selenium.webdriver.common.keys import Keys
-                from selenium.webdriver.support.ui import WebDriverWait
-                from selenium.webdriver.support import expected_conditions as EC
-                driver = webdriver.Chrome()
-                driver.maximize_window()
-                wait = WebDriverWait(driver, 3)
-                presence = EC.presence_of_element_located
-                visible = EC.visibility_of_element_located
+                # code to play a song from youtube
+                # if first word of user sentence is play then execute this code
+                print(query.split())
+                if query.split()[0] == "play":
+                    from selenium import webdriver
+                    from selenium.webdriver.common.by import By
+                    from selenium.webdriver.common.keys import Keys
+                    from selenium.webdriver.support.ui import WebDriverWait
+                    from selenium.webdriver.support import expected_conditions as EC
+                    driver = webdriver.Chrome()
+                    driver.maximize_window()
+                    wait = WebDriverWait(driver, 3)
+                    presence = EC.presence_of_element_located
+                    visible = EC.visibility_of_element_located
 
-                # Navigate to url with video being appended to search_query
-                title = query.split(' ', 1)[1]
-                print(title)
-                driver.get('https://www.youtube.com/results?search_query={}'.format(str(title)))
+                    # Navigate to url with video being appended to search_query
+                    title = query.split(' ', 1)[1]
+                    print(title)
+                    driver.get('https://www.youtube.com/results?search_query={}'.format(str(title)))
 
-                # play the video
-                wait.until(visible((By.ID, "video-title")))
-                driver.find_element_by_id("video-title").click()
-            else:
-                print("entered else")
-                ints = predict_class(query)
-                print("ints", ints)
-                # print("float[ints][0]", float(ints[0]['probability']))
-                try:
-                    print("Before if")
-                    if float(ints[0]['probability']) < 0.60000 and query!= "none":
-                        print("after if")
-                        webbrowser.open("https://www.google.com/search?q="+query)
-                        # speak("Not sure what you meant there")
-                        # userwish = input("Do you want me to learn")
-                        # if userwish == 'yes':
-                        #     getsmart()
-                        #     speak("trained new model")
-                        #     intents = json.loads(open('intents.json').read())
-                        #     #     reloading model, classes, words.pkl files
-                        #     words = pickle.load(open('words.pkl', 'rb'))
-                        #     classes = pickle.load(open('classes.pkl', 'rb'))
-                        #     model = load_model('chatbot_model.h5')
-
-                    else:
-                        print("entered 2nd else")
-                        res = get_response(ints, intents)
-                        print("res",res)
-                        speak(res)
-
-                        userintent = ints[0]['intent']
-                        if userintent == 'lon':
-                            response = mybolt.digitalWrite('0', 'HIGH')
-                            print(response)
-                        elif userintent == 'loff':
-                            response = mybolt.digitalWrite('0', 'LOW')
-                        elif userintent == 'Youtube':
-                            speak("Add a search term")
-                            query = takeCommand(mode).lower()
-                            webbrowser.open("https://www.youtube.com/results?search_query="+query)
-                        elif userintent == 'google':
-                            speak("Add a search term")
-                            query = takeCommand(mode).lower()
-                            webbrowser.open("https://www.google.com/search?q="+query)
-                        # Logic for executing tasks based on query
-                        elif userintent == 'stats':
-                            devices = AudioUtilities.GetSpeakers()
-                            interface = devices.Activate(
-                                IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
-                            battery = psutil.sensors_battery()
-                            speak(f"Battery at {battery.percent}")
-                            speak(f"You are good for{secs2hours(battery.secsleft)}")
-                            volume = cast(interface, POINTER(IAudioEndpointVolume))
-                            speak(f"Volume levels at{round(volume.GetMasterVolumeLevelScalar()*100)}")
-                            speak(f"Screen Brightness at{wmi.WMI(namespace='wmi').WmiMonitorBrightness()[0].CurrentBrightness}")
-
-                        elif userintent == 'brightness':
-                            brt()
-                        elif userintent == 'volume':
-                            vlm()
-                        elif userintent == "switch window":
-                            pg.hotkey('alt','tab')
-                        elif userintent == "show workspace":
-                            pg.hotkey('win','tab')
-                        elif userintent == 'launch':
-                            speak("what apps do you want to launch")
-                            apps=takeCommand(mode) #change it later
-                            pg.press('win')
-                            time.sleep(2)
-                            pg.write(apps)
-                            time.sleep(1)
-                            pg.press('enter')
-
-                        elif userintent == 'init':
-                            key = input("Enter Master Password")
-                            if key == userkey():
-                                initialisation()
-                            else:
-                                print("denied")
-                        elif userintent == 'converter':
-                            print("converter else")
-                            webbrowser.open("http://127.0.0.1:5000")
-                            app.run()
-                            
-                            
-                        elif 'wikipedia' in query:
-                            speak('Searching Wikipedia...')
-                            query = query.replace("wikipedia", "")
-                            results = wikipedia.summary(query, sentences=2)
-                            speak("According to Wikipedia")
-                            print(results)
-                            speak(results)
-                                  
-                        elif 'open youtube' in query:
-                            webbrowser.open("youtube.com")
-
-                        elif 'open google' in query:
-                            webbrowser.open("google.com")
-
-                        elif 'open stackoverflow' in query:
-                            webbrowser.open("stackoverflow.com")
-
-                        elif 'play music' in query:
-                            music_dir = 'D:\\Non Critical\\songs\\Favorite Songs2'
-                            songs = os.listdir(music_dir)
-                            print(songs)
-                            os.startfile(os.path.join(music_dir, songs[0]))
-
-                        elif 'the time' in query:
-                            strTime = datetime.datetime.now().strftime("%H:%M:%S")
-                            speak(f"The time is {strTime}")
-
-                        elif 'open code' in query:
-                            codePath = ""
-                            os.startfile(codePath)
-
-                        elif 'to do' in query:
-                            todo()
-                        elif 'news' in query:
-                            obj = nws()
-                            news_res = obj.news()
-                            speak('Todays Headlines are..')
-                            for index, articles in enumerate(news_res):
-                                pprint.pprint(articles['title'])
-                                speak(articles['title'])
-                                if index == len(news_res)-2:
-                                    break
-                            speak('These were the top headlines, Have a nice day')
-
-                        elif 'mail' in query:
-                            speak(mail())
-                        elif 'weather' in query:
-                            speak(weather())
+                    # play the video
+                    wait.until(visible((By.ID, "video-title")))
+                    driver.find_element_by_id("video-title").click()
+                else:
+                    
+                    ints = predict_class(query)
+                    print("ints", ints)
+                    # print("float[ints][0]", float(ints[0]['probability']))
+                    try:
                         
-    
-    
-                except Exception as e:
-                    print("eda exception",e)
-                    if "list network" in query:
-                        devices = subprocess.check_output(['netsh','wlan','show','network'])
-                        devices = devices.decode('ascii')
-                        devices= devices.replace("\r","")
-                        print(devices)
+                        if float(ints[0]['probability']) < 0.60000 and query!= "none":
+                            webbrowser.open("https://www.google.com/search?q="+query)
+                            speak("Not sure what you meant there")
+                            userwish = input("Do you want me to learn")
+                            if userwish == 'yes':
+                                 getsmart()
+                                 speak("trained new model")
+                                 intents = json.loads(open('intents.json').read())
+                                 #reloading model, classes, words.pkl files
+                                 words = pickle.load(open('words.pkl', 'rb'))
+                                 classes = pickle.load(open('classes.pkl', 'rb'))
+                                 model = load_model('chatbot_model.h5')
 
+                        else:
+                            res = get_response(ints, intents)
+                            print("response :",res)
+                            speak(res)
+
+                            userintent = ints[0]['intent']
+                            if userintent == 'lon':
+                                response = mybolt.digitalWrite('0', 'HIGH')
+                                print(response)
+                            elif userintent == 'loff':
+                                response = mybolt.digitalWrite('0', 'LOW')
+                            elif userintent == 'Youtube':
+                                speak("Add a search term")
+                                query = takeCommand(mode).lower()
+                                webbrowser.open("https://www.youtube.com/results?search_query="+query)
+                            elif userintent == 'google':
+                                speak("Add a search term")
+                                query = takeCommand(mode).lower()
+                                webbrowser.open("https://www.google.com/search?q="+query)
+                            # Logic for executing tasks based on query
+                            elif userintent == 'stats':
+                                devices = AudioUtilities.GetSpeakers()
+                                interface = devices.Activate(
+                                    IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
+                                battery = psutil.sensors_battery()
+                                speak(f"Battery at {battery.percent}")
+                                speak(f"You are good for{secs2hours(battery.secsleft)}")
+                                volume = cast(interface, POINTER(IAudioEndpointVolume))
+                                speak(f"Volume levels at{round(volume.GetMasterVolumeLevelScalar()*100)}")
+                                speak(f"Screen Brightness at{wmi.WMI(namespace='wmi').WmiMonitorBrightness()[0].CurrentBrightness}")
+
+                            elif userintent == 'brightness':
+                                brt()
+                            elif userintent == 'volume':
+                                vlm()
+                            elif userintent == "switch window":
+                                pg.hotkey('alt','tab')
+                            elif userintent == "show workspace":
+                                pg.hotkey('win','tab')
+                            elif userintent == 'launch':
+                                speak("what apps do you want to launch")
+                                apps=takeCommand(mode) #change it later
+                                pg.press('win')
+                                time.sleep(2)
+                                pg.write(apps)
+                                time.sleep(1)
+                                pg.press('enter')
+
+                            elif userintent == 'init':
+                                key = input("Enter Master Password")
+                                if key == userkey():
+                                    initialisation()
+                                else:
+                                    print("denied")
+                            elif userintent == 'converter':
+                                print("converter else")
+                                webbrowser.open("http://127.0.0.1:5000")
+                                app.run()
+                                
+                                
+                            elif 'wikipedia' in query:
+                                speak('Searching Wikipedia...')
+                                query = query.replace("wikipedia", "")
+                                results = wikipedia.summary(query, sentences=2)
+                                speak("According to Wikipedia")
+                                print(results)
+                                speak(results)
+                                    
+                            elif 'open youtube' in query:
+                                webbrowser.open("youtube.com")
+
+                            elif 'open google' in query:
+                                webbrowser.open("google.com")
+
+                            elif 'open stackoverflow' in query:
+                                webbrowser.open("stackoverflow.com")
+
+                            elif 'play music' in query:
+                                music_dir = 'D:\\Non Critical\\songs\\Favorite Songs2'
+                                songs = os.listdir(music_dir)
+                                print(songs)
+                                os.startfile(os.path.join(music_dir, songs[0]))
+
+                            elif 'the time' in query:
+                                strTime = datetime.datetime.now().strftime("%H:%M:%S")
+                                speak(f"The time is {strTime}")
+
+                            elif 'open code' in query:
+                                codePath = ""
+                                os.startfile(codePath)
+
+                            elif 'to do' in query:
+                                todo()
+                            elif 'news' in query:
+                                obj = nws()
+                                news_res = obj.news()
+                                speak('Todays Headlines are..')
+                                for index, articles in enumerate(news_res):
+                                    pprint.pprint(articles['title'])
+                                    speak(articles['title'])
+                                    if index == len(news_res)-2:
+                                        break
+                                speak('These were the top headlines, Have a nice day')
+
+                            elif 'mail' in query:
+                                speak(mail())
+                            elif 'weather' in query:
+                                speak(weather())
+                            elif 'amazon' or 'flipkart':
+                                ecomm()
+
+        
+                    except Exception as e:
+                        print("exception",e)
+                        if "list network" in query:
+                            devices = subprocess.check_output(['netsh','wlan','show','network'])
+                            devices = devices.decode('ascii')
+                            devices= devices.replace("\r","")
+                            print(devices)
+
+                        elif 'amazon' or 'flipkart':
+                                ecomm()
