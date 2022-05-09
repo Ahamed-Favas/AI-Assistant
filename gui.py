@@ -9,6 +9,7 @@ from PyQt5.QtCore import Qt, QTimer, QTime,QDate
 from PyQt5.uic import loadUiType
 import sys
 import os 
+import time
 
 import main
 
@@ -36,12 +37,14 @@ class Gui_Start(QMainWindow):
         self.gui.pushButton_2.clicked.connect(self.close)
 
     def startTask(self):
-        
+        startExe.start()
+
         self.gui.label=QtGui.QMovie("Assets/bubble.gif")
         self.gui.bg_2.setMovie(self.gui.label)
+        time.sleep(6)
         self.gui.label.start()
 
-        startExe.start()
+        
 
 
 
